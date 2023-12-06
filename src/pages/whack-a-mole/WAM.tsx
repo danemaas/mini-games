@@ -46,37 +46,39 @@ const WAM = () => {
       <h2 className="text-center mt-10 text-3xl font-semibold">
         Whack-A-Mole Game
       </h2>
-      {timer > 0 ? (
-        <div className="w-full flex items-center justify-between p-5">
-          <p>Score: {score}</p>
-          <p>Timer: {timer}s</p>
-        </div>
-      ) : (
-        <p className="text-center text-lg font-semibold">
-          Your Score is {score}
-        </p>
-      )}
-
-      <div className="grid grid-cols-3 gap-2 p-3">
-        {grid.map((box, index) => (
-          <div
-            key={index}
-            onClick={(e) => handleClicks(e, index)}
-            className="cursor-pointer"
-          >
-            <img src={box} alt="hole/mole" />
+      <div className="max-w-[400px] md:max-w-[600px] mx-auto flex flex-col justify-center items-center">
+        {timer > 0 ? (
+          <div className="w-full flex items-center justify-between p-5">
+            <p>Score: {score}</p>
+            <p>Timer: {timer}s</p>
           </div>
-        ))}
-      </div>
+        ) : (
+          <p className="text-center text-lg font-semibold">
+            Your Score is {score}
+          </p>
+        )}
 
-      <button
-        disabled={start && timer > 0}
-        onClick={() => (setStart(true), setTimer(30))}
-        className="w-max self-center my-5 border-2 border-cyan-500 rounded-md p-2
+        <div className=" grid grid-cols-3 gap-2 p-3">
+          {grid.map((box, index) => (
+            <div
+              key={index}
+              onClick={(e) => handleClicks(e, index)}
+              className="cursor-pointer"
+            >
+              <img src={box} alt="hole/mole" />
+            </div>
+          ))}
+        </div>
+
+        <button
+          disabled={start && timer > 0}
+          onClick={() => (setStart(true), setTimer(30))}
+          className="w-max my-5 border-2 border-cyan-500 rounded-md p-2
         hover:bg-cyan-500 hover:text-black transition-all duration-300"
-      >
-        Start Game
-      </button>
+        >
+          Start Game
+        </button>
+      </div>
     </section>
   );
 };
