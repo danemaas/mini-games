@@ -1,6 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header, Footer, Sidebar } from "./components";
-import { SignIn, SignUp, Home, TicTacToe, WAM } from "./pages/pages";
+import {
+  SignIn,
+  SignUp,
+  Home,
+  TicTacToe,
+  WAM,
+  MemoryGame,
+} from "./pages/pages";
 
 const App = () => {
   return (
@@ -14,6 +21,7 @@ const App = () => {
         <Route path="/games">
           <Route path="tictactoe" element={<TicTacToe />} />
           <Route path="whackamole" element={<WAM />} />
+          <Route path="memory" element={<MemoryGame />} />
         </Route>
       </Routes>
       <Footer />
