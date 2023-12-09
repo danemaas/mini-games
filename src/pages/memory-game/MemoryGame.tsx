@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 
-const MemoryGame = () => {
-  const [isActive, setIsActive] = useState<number[]>([]);
-  const [matches, setMatches] = useState<number>(0);
-  const grid = 4;
-  const totalCells = grid * grid;
-  const pairs = totalCells / 2;
-  const active = "bg-transparent text-black";
-  const inActive = "bg-white text-white";
+const NumberMatchingGame = () => {
+  const [gridSize] = useState(4);
+  const [numbers, setNumbers] = useState<number[]>([]);
+  const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
+  const [matches, setMatches] = useState<number[]>([]);
+  const [moves, setMoves] = useState<number>(0);
 
   const generateShuffledNumbers = () => {
-    const numbers = Array.from({ length: pairs }, (_, index) => index + 1);
+    const numbers = Array.from(
+      { length: (gridSize * gridSize) / 2 },
+      (_, index) => index + 1
+    );
     const pairedNumbers = [...numbers, ...numbers];
 
     for (let i = pairedNumbers.length - 1; i > 0; i--) {
@@ -24,31 +25,21 @@ const MemoryGame = () => {
     return pairedNumbers;
   };
 
-  const [shuffledNumbers, setShuffledNumbers] = useState(
-    generateShuffledNumbers()
-  );
-
   useEffect(() => {
-    setShuffledNumbers(generateShuffledNumbers());
+    setNumbers(generateShuffledNumbers());
   }, []);
 
-  const handleClicks = (indexClicked: number) => {
-    if (isActive.length < 2) {
-      setIsActive((prev) => [...prev, indexClicked]);
-      handleMatches();
-    } else {
-      handleMatches();
-      setIsActive([indexClicked]);
-    }
-  };
-
-  const handleMatches = () => {
-    if (isActive.length === 2) {
-      if (shuffledNumbers[isActive[0]] === shuffledNumbers[isActive[1]]) {
-        setMatches((prev) => prev + 1);
-        setIsActive([]);
+  const handleClick = (index: number) => {
+    if (flippedIndices.length < 2 && !flippedIndices.includes(index)) {
+      setFlippedIndices((prev) => [...prev, index]);
+      setMoves((prev) => prev + 1);
+    } else if (flippedIndices.length === 2) {
+      const [index1, index2] = flippedIndices;
+      if (numbers[index1] === numbers[index2]) {
+        setMatches((prev) => [...prev, numbers[index1]]);
+        setFlippedIndices([]);
       } else {
-        setIsActive([]);
+        setFlippedIndices([]);
       }
     }
   };
@@ -56,39 +47,34 @@ const MemoryGame = () => {
   return (
     <section className="w-full min-h-screen p-8 bg-gradient-to-r from-cyan-500 to-blue-500">
       <h1 className="text-3xl text-center text-white font-semibold my-10">
-        Memory Game
+        Number Matching Game
       </h1>
+      <div>
+        <p>Moves: {moves}</p>
+      </div>
       <div
-        className={`w-[300px] mx-auto grid gap-5 ${
-          grid === 4 && "grid-cols-4"
-        }`}
+        className={`grid grid-cols-${gridSize} gap-5 w-[400px] mx-auto mt-5 place-items-center`}
       >
-        {shuffledNumbers.map((number, index) => (
-          <div
-            onClick={() => handleClicks(index)}
-            id={index.toString()}
+        {numbers.map((number, index) => (
+          <button
             key={index}
-            className={`w-12 h-12 border-2 border-white rounded-full cursor-pointer
+            onClick={() => handleClick(index)}
+            disabled={matches.includes(number)}
+            className={`w-12 h-12 text-black border-2 border-white rounded-full cursor-pointer
               flex justify-center items-center ${
-                isActive.includes(index) ? active : inActive
-              } ${
-              isActive.length === 2 &&
-              shuffledNumbers[isActive[0]] === shuffledNumbers[isActive[1]] &&
-              isActive.includes(index)
-                ? "matched"
-                : ""
-            }`}
+                flippedIndices.includes(index) || matches.includes(number)
+                  ? "bg-transparent"
+                  : "bg-white"
+              }`}
           >
-            {isActive.includes(index) ||
-            (isActive.length === 2 && isActive.includes(index))
+            {flippedIndices.includes(index) || matches.includes(number)
               ? number
               : ""}
-          </div>
+          </button>
         ))}
       </div>
-      <p>Matches: {matches}</p>
     </section>
   );
 };
 
-export default MemoryGame;
+export default NumberMatchingGame;
